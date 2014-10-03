@@ -3,3 +3,7 @@
 name = "rust-streaming"
 version = "0.0.1"
 authors = ["Eric Kidd <git@randomhacks.net>"]
+
+[lib]
+name = "streaming"
+doc = false
