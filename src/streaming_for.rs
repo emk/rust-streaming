@@ -195,17 +195,15 @@ fn zero_copy_parser(b: &mut test::Bencher) {
 //=========================================================================
 //  Making It Look Nice
 
-// I'd love to make this a trait...
 pub trait StreamingIterator<'a, T> {
-    fn next_in_stream(&mut self) -> Option<T>;
+    fn next_in_stream(&'a mut self) -> Option<T>;
 }
 
-// ...so that we can make this an implementation of StreamingIterator.
-impl<'a> /*StreamingIterator<'a, (&'a str, &'a str, &'a str)>
-    for */ ZeroCopyParser<'a> {
+impl<'a> StreamingIterator<'a, (&'a str, &'a str, &'a str)>
+    for ZeroCopyParser<'a> {
 
     #[inline]
-    pub fn next_in_stream(&mut self) -> Option<(&str, &str, &str)> {
+    fn next_in_stream(&mut self) -> Option<(&str, &str, &str)> {
         self.next()
     }
 }
