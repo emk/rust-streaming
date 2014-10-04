@@ -6,5 +6,3 @@
 
 pub mod iter;
 pub mod buffers;
-
-#[cfg(test)] mod toy_parsers;

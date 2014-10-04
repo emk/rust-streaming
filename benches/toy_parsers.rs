@@ -17,10 +17,14 @@
 //! Iterator that allows us to use zero_copy_parser without causing ugly
 //! design issues elsewhere?
 
-use iter::StreamingIterator;
-use std::iter::range;
+#![feature(phase)]
 
-#[cfg(test)] use test;
+#[cfg(test)] extern crate test;
+#[phase(plugin)] extern crate streaming;
+extern crate streaming;
+
+use std::iter::range;
+use streaming::iter::StreamingIterator;
 
 
 //=========================================================================

@@ -12,6 +12,7 @@ pub trait StreamingIterator<'a, T> {
 
 /// Similar to `for`, but doesn't enforce any trait restrictions on the
 /// iterator.
+#[macro_export]
 macro_rules! streaming_for {
     ($var:pat in $expr:expr, $b:stmt) => {
         {
