@@ -3,6 +3,20 @@
 Here there be hacks.  No APIs are stable.  Code may not do what the
 comments claim.
 
+Key goal:
+
+* Build a `StreamingIterator` type that can return references to internal
+  state, including as I/O buffers and the output buffers of libraries like
+  [`flate2`](https://github.com/alexcrichton/flate2-rs).  This prevents
+  implementing `collect`, but why can't we have `map`, `filter` and `fold`?
+
+Target applications:
+
+* [rust-csv](https://github.com/BurntSushi/rust-csv).
+* Multicore map/reduce of
+  [Snappy](https://code.google.com/p/snappy/)-compressed records.
+* Anybody else who needs to iterate over a data stream without allocating.
+
 Random useful things to read:
 
 * [Iterating short-lived objects](http://discuss.rust-lang.org/t/iterating-short-lived-objects/274)
