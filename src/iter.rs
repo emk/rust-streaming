@@ -7,6 +7,8 @@
 ///
 /// Massive thanks to Sharp for figuring out how to do this.
 pub trait StreamingIterator<'a, T> {
+    /// Return either the next item in the sequence, or `None` if all items
+    /// have been consumed.
     fn next(&'a mut self) -> Option<T>;
 }
 
