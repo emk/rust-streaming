@@ -15,3 +15,6 @@
 
 pub mod iter;
 pub mod buffers;
+
+#[cfg(test)]
+mod tests;
