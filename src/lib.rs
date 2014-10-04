@@ -4,5 +4,7 @@
 
 // Want to share your experiments, hacks, etc.?  Just add a module.
 
+pub mod iter;
 pub mod buffers;
-pub mod streaming_for;
+
+#[cfg(test)] mod toy_parsers;

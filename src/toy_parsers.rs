@@ -17,6 +17,7 @@
 //! Iterator that allows us to use zero_copy_parser without causing ugly
 //! design issues elsewhere?
 
+use iter::StreamingIterator;
 use std::iter::range;
 
 #[cfg(test)] use test;
@@ -134,16 +135,12 @@ impl<'a> ZeroCopyParser<'a> {
     pub fn new(reader: &'a mut BufferedReader<'a>) -> ZeroCopyParser<'a> {
         ZeroCopyParser{reader: reader}
     }
+}
 
-    // I can't figure out how to use the iterator protocol here.  The key
-    // insight is that this signature works like
-    // BufferedReader::next_line() or Buffer::fill_buf().  Our return value
-    // locks the iterator as immutable until it goes out of scope.  But see
-    // https://github.com/rust-lang/rust/issues/6393 and
-    // https://github.com/rust-lang/rust/issues/12147 for some lifetime
-    // checker iteractions that can be tricky when working with conditional
-    // returns.
-    pub fn next(&mut self) -> Option<(&str, &str, &str)> {
+impl<'a> StreamingIterator<'a, (&'a str, &'a str, &'a str)>
+    for ZeroCopyParser<'a> {
+
+    fn next(&mut self) -> Option<(&str, &str, &str)> {
         match self.reader.next_line() {
             None => None,
             Some(ref line) => {
@@ -158,75 +155,8 @@ impl<'a> ZeroCopyParser<'a> {
     }
 }
 
-// I tried:
-//
-// ```
-// impl<'a> Iterator<(&'a str,&'a str,&'a str)> for ZeroCopyParser<'a> {
-//    fn next(&mut self) -> Option<(&str, &str, &str)> {
-// ```
-//
-// But I got:
-//
-// method `next` has an incompatible type for trait: expected concrete
-// lifetime, found bound lifetime parameter
-//
-// Can I tweak my type declarations and get this to work somehow?
-
 #[bench]
 fn zero_copy_parser(b: &mut test::Bencher) {
-    let file = make_pretend_file();
-    b.bytes = file.len() as u64;
-    b.iter(|| -> () {
-        let mut reader = BufferedReader::new(file.as_slice());
-        let mut parser = ZeroCopyParser::new(&mut reader);
-        // This looks ugly, but it's really, really fast.  We're using a
-        // mutable borrow of parser.next() to lock our internal buffers
-        // into place until the borrow expires.
-        loop {
-            match parser.next() {
-                None => { break; }
-                Some(line) => { test::black_box(line); }
-            }
-        }
-    });
-}
-
-
-//=========================================================================
-//  Making It Look Nice
-
-// I'd love to make this a trait...
-pub trait StreamingIterator<'a, T> {
-    fn next_in_stream(&mut self) -> Option<T>;
-}
-
-// ...so that we can make this an implementation of StreamingIterator.
-impl<'a> /*StreamingIterator<'a, (&'a str, &'a str, &'a str)>
-    for */ ZeroCopyParser<'a> {
-
-    #[inline]
-    pub fn next_in_stream(&mut self) -> Option<(&str, &str, &str)> {
-        self.next()
-    }
-}
-
-macro_rules! streaming_for {
-    ($var:pat in $expr:expr, $b:stmt) => {
-        {
-            // Only evaluate once!
-            let ref mut iter = &mut $expr;
-            loop {
-                match iter.next_in_stream() {
-                    None => { break; }
-                    Some($var) => { $b }
-                }
-            }
-        }
-    };
-}
-
-#[bench]
-fn replacement_iterator_trait(b: &mut test::Bencher) {
     let file = make_pretend_file();
     b.bytes = file.len() as u64;
     b.iter(|| -> () {
