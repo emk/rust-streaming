@@ -1,4 +1,4 @@
-#![feature(macro_rules, slicing_syntax)]
+#![feature(macro_rules)]
 
 #[cfg(test)] extern crate test;
 
@@ -6,3 +6,6 @@
 
 pub mod iter;
 pub mod buffers;
+
+#[cfg(test)]
+mod tests;
