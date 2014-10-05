@@ -7,7 +7,7 @@
 #![deny(missing_doc)]
 #![deny(warnings)]
 
-#![feature(macro_rules, slicing_syntax)]
+#![feature(macro_rules)]
 
 #[cfg(test)] extern crate test;
 
