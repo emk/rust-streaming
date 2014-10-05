@@ -13,5 +13,6 @@
 
 // Want to share your experiments, hacks, etc.?  Just add a module.
 
+pub mod csv;
 pub mod iter;
 pub mod buffers;
