@@ -20,6 +20,7 @@ Target applications:
 Random useful things to read:
 
 * [Higher-kinded types and why they're important](https://github.com/aturon/rfcs/blob/collections-conventions/text/0000-collection-conventions.md#lack-of-iterator-methods).
+* [Emulating higher-kinded types with proposed associated types & lifetimes](https://github.com/rust-lang/rfcs/blob/master/text/0195-associated-items.md#encoding-higher-kinded-types).
 * [Iterating short-lived objects](http://discuss.rust-lang.org/t/iterating-short-lived-objects/274)
 * [Borrow scopes should not always be lexical](https://github.com/rust-lang/rust/issues/6393) (aka, "why we have one line of `unsafe`")
 * [Borrow checker gets confused by a conditionally returned borrows](https://github.com/rust-lang/rust/issues/12147) (same as above, but clearer)
